@@ -1,7 +1,58 @@
 .appBackground {
+  background-image: url('./images/bg.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  min-height: 100vh;
+  width: 100%;
   height: 100vh;
-  width: 100vw;
+  z-index: -1;
+}
+
+.gameTitle {
+  color: white;
+  display: flex;
+  justify-content: center;
+  padding-top: 80px;
+}
+
+.playBtn {
+  position: absolute;
+  padding: 20px 40px; /* Increase padding to make the button larger */
+  font-size: 30px;    /* Increase font size */
+  border-radius: 12px; /* Optional: Rounded corners */
+  bottom: 130px;  /* Adjust this value to set the distance from the bottom */
+  left: 50%;     /* Center the button horizontally */
+  transform: translateX(-50%); /* Shift the button to the left by half its width to truly center it */
+}
+
+.Summary {
+  background-color: blue;
+  width: 450px;
+  height: 450px;
+  position: absolute;
+  top: 20%;
+  right: 55%;
+  border-radius: 25px;
+}
+
+.ScoreBoard {
+  background-color: blue;
+  width: 450px;
+  height: 450px;
+  position: absolute;
+  top: 20%;
+  left: 55%;
+  border-radius: 25px;
+}
+
+.title {
+  color: white;
+  text-align: center;
+}
+
+.scores {
+  color: white;
+  text-align: center;
+
 }
