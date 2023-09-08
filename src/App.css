@@ -18,6 +18,9 @@
 
 .playBtn {
   position: absolute;
+  color: white;
+  text-decoration: none;
+  background-color: blue;
   padding: 20px 40px; /* Increase padding to make the button larger */
   font-size: 30px;    /* Increase font size */
   border-radius: 12px; /* Optional: Rounded corners */
@@ -28,20 +31,22 @@
 
 .Summary {
   background-color: blue;
+  opacity: 30%;
   width: 450px;
   height: 450px;
   position: absolute;
-  top: 20%;
+  top: 25%;
   right: 55%;
   border-radius: 25px;
 }
 
 .ScoreBoard {
   background-color: blue;
+  opacity: 30%;
   width: 450px;
   height: 450px;
   position: absolute;
-  top: 20%;
+  top: 25%;
   left: 55%;
   border-radius: 25px;
 }
