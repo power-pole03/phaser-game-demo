@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import GamePhaser from "./GamePhaser";
 import '../App.css';
 
 export default function Game() {
   
-  const [setGameRef] = useState(null);
+  const [gameRef, setGameRef] = useState(null);
   
 
   return (
-    <GamePhaser setGameRef={setGameRef} />
+      <GamePhaser setGameRef={setGameRef} />
   )
 }
