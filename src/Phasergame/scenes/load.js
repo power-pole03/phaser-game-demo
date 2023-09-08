@@ -45,15 +45,66 @@ export class Load extends Phaser.Scene {
         bg.setScale(scale);
         const { width, height} = this.scale
 
-        const card1 = this.add.sprite(width * 0.5, height * 0.5, 'card-back')
-        const card2 = this.add.sprite(width * 0.75, height * 0.2, 'card-back')
+        const card1 = this.add.sprite(width * 0.2, height * 0.38, 'card-back')
+        card1.scale=1.65;
+        const card2 = this.add.sprite(width * 0.33, height * 0.38, 'card-back')
+        card2.scale=1.65;
+        const card3 = this.add.sprite(width * 0.46, height * 0.38, 'card-back')
+        card3.scale=1.65;
+        const card4 = this.add.sprite(width * 0.59, height * 0.38, 'card-back')
+        card4.scale=1.65;
+        const card5 = this.add.sprite(width * 0.72, height * 0.38, 'card-back')
+        card5.scale=1.65;
+        const card6 = this.add.sprite(width * 0.85, height * 0.38, 'card-back')
+        card6.scale=1.65;
+        const card7 = this.add.sprite(width * 0.2, height * 0.65, 'card-back')
+        card7.scale=1.65;
+        const card8 = this.add.sprite(width * 0.33, height * 0.65, 'card-back')
+        card8.scale=1.65;
+        const card9 = this.add.sprite(width * 0.46, height * 0.65, 'card-back')
+        card9.scale=1.65;
+        const card10 = this.add.sprite(width * 0.59, height * 0.65, 'card-back')
+        card10.scale=1.65;
+        const card11 = this.add.sprite(width * 0.72, height * 0.65, 'card-back')
+        card11.scale=1.65;
+        const card12 = this.add.sprite(width * 0.85, height * 0.65, 'card-back')
+        card12.scale=1.65;
 
         this.input.on(Phaser.Input.Events.POINTER_UP, () => {
             this.flip(card1)
         })
-        
         this.input.on(Phaser.Input.Events.POINTER_UP, () => {
             this.flip(card2)
+        })
+        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.flip(card3)
+        })
+        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.flip(card4)
+        })
+        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.flip(card5)
+        })
+        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.flip(card6)
+        })
+        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.flip(card7)
+        })
+        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.flip(card8)
+        })
+        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.flip(card9)
+        })
+        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.flip(card10)
+        })
+        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.flip(card11)
+        })
+        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.flip(card12)
         })
     }
 /**

@@ -56,6 +56,6 @@ export default function GamePhaser({setGameRef}) {
             phaserGameRef.current.destroy(true);
             phaserGameRef.current = null;
         };
-    }, []);
+    });
 
 }
