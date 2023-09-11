@@ -30,91 +30,60 @@ export class Load extends Phaser.Scene {
 
     create() {
         this.cameras.main.fadeIn(500, 0, 0, 0);
-        this.cameras.main.setBackgroundColor('#081733');
-
-        // this.time.addEvent({
-        //     delay: 3900,
-        //     callback: () => { this.cameras.main.fadeOut(500, 0, 0, 0) },
-        // });
 
         let bg = this.add.image(0, 0, 'background').setOrigin(0, 0);
-
         let scaleX = this.cameras.main.width / bg.width;
         let scaleY = this.cameras.main.height / bg.height;
         let scale = Math.max(scaleX, scaleY);
         bg.setScale(scale);
-        const { width, height} = this.scale
 
-        const card1 = this.add.sprite(width * 0.2, height * 0.38, 'card-back')
-        card1.scale=1.65;
-        const card2 = this.add.sprite(width * 0.33, height * 0.38, 'card-back')
-        card2.scale=1.65;
-        const card3 = this.add.sprite(width * 0.46, height * 0.38, 'card-back')
-        card3.scale=1.65;
-        const card4 = this.add.sprite(width * 0.59, height * 0.38, 'card-back')
-        card4.scale=1.65;
-        const card5 = this.add.sprite(width * 0.72, height * 0.38, 'card-back')
-        card5.scale=1.65;
-        const card6 = this.add.sprite(width * 0.85, height * 0.38, 'card-back')
-        card6.scale=1.65;
-        const card7 = this.add.sprite(width * 0.2, height * 0.65, 'card-back')
-        card7.scale=1.65;
-        const card8 = this.add.sprite(width * 0.33, height * 0.65, 'card-back')
-        card8.scale=1.65;
-        const card9 = this.add.sprite(width * 0.46, height * 0.65, 'card-back')
-        card9.scale=1.65;
-        const card10 = this.add.sprite(width * 0.59, height * 0.65, 'card-back')
-        card10.scale=1.65;
-        const card11 = this.add.sprite(width * 0.72, height * 0.65, 'card-back')
-        card11.scale=1.65;
-        const card12 = this.add.sprite(width * 0.85, height * 0.65, 'card-back')
-        card12.scale=1.65;
+        const { width, height} = this.scale;
 
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card1)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card2)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card3)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card4)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card5)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card6)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card7)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card8)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card9)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card10)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card11)
-        })
-        this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-            this.flip(card12)
-        })
+        // Create the cards and store them in an array
+        const cards = [];
+        for (let i = 0; i < 12; i++) {
+            const x = width * (0.2 + (i % 6 * 0.13));
+            const y = height * (i < 6 ? 0.38 : 0.65);
+            const card = this.add.sprite(x, y, 'card-back').setScale(1.65);
+            cards.push(card);
+        }
+
+        this.input.on(Phaser.Input.Events.POINTER_UP, (pointer) => {
+            const clickedCard = cards.find(card => Phaser.Geom.Rectangle.Contains(card.getBounds(), pointer.x, pointer.y));
+            if (clickedCard) {
+                this.flip(clickedCard);
+            }
+        });
     }
-/**
-  *@param {Phaser.GameObjects.Sprite} card
-*/
-    flip(card){
-        console.log(card)
-        // const timeline = this.tweens.timeline()
 
-        // timeline.
+    flip(card) {
+        const cardTypes = [
+            'card-1or11', 'card-double', 'card-redraw', 'card-resurrect',
+            'card-steal', 'card-tiebreaker'
+        ];
+
+        const isCardFaceUp = cardTypes.includes(card.texture.key);
+        const targetTexture = isCardFaceUp ? 'card-back' : Phaser.Utils.Array.GetRandom(cardTypes);
+
+        const cardBackWidth = this.textures.get('card-back').getSourceImage().width;
+        const cardBackHeight = this.textures.get('card-back').getSourceImage().height;
+        const scaleFactorX = isCardFaceUp ? 1.65 : (1.65 * (cardBackWidth / this.textures.get(targetTexture).getSourceImage().width));
+        const scaleFactorY = isCardFaceUp ? 1.65 : (1.65 * (cardBackHeight / this.textures.get(targetTexture).getSourceImage().height));
+
+        this.tweens.add({
+            targets: card,
+            scaleX: 0,
+            scaleY:0,
+            duration: 200,
+            onComplete: () => {
+                card.setTexture(targetTexture);
+                this.tweens.add({
+                    targets: card,
+                    scaleX: scaleFactorX,
+                    scaleY: scaleFactorY,
+                    duration: 400
+                });
+            }
+        });
     }
-    
 }
