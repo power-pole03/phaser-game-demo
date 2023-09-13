@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback} from "react";
-import { Container , Button , Table } from 'react-bootstrap';
+import { Container , Table } from 'react-bootstrap';
 import './App.css';
 import { /*updateHighScores,*/ getHighScores } from "./score";
 import {Link} from "wouter";
@@ -41,8 +41,14 @@ function Home() {
   return (
     
     <Container fluid className="appBackground">
-      <audio src={playlist[currentTrackIndex]} ref={audioRef} autoPlay controls></audio>
-      <h1 className='gameTitle'>Match Game</h1>
+      <video className="logo" autoPlay muted>
+        <source
+          src="logo_animation.mp4"
+          type="video/mp4"
+        />
+      </video>
+      {/* <audio src={playlist[currentTrackIndex]} ref={audioRef} autoPlay controls></audio> */}
+      <h1 className="gameTitle">Match Game</h1>
       <div className='Summary'>
         <h3 className='title'>Summary</h3>
       </div>
@@ -72,7 +78,7 @@ function Home() {
         </Table>
       </div>
       <Link href="/Game" >
-        <Button size="lg" className="playBtn" >Start game</Button>
+        <button size="lg" className="playBtn" >Start game</button>
       </Link>
     </Container>
     

@@ -68,9 +68,107 @@ export class Load extends Phaser.Scene {
         });
 
         this.flippedCards = [];
+
+        this.welcomeText = this.add.text(650, 250, `MAKE AS MANY MATCHES AS YOU CAN BEFORE TIME RUNS OUT!`, {
+            font: '130px "Truculenta"',
+            shadow: {
+                offsetX: 3,
+                offsetY: 3,
+                color: '#000',
+                blur: 5,
+                fill: true
+            }
+        })
+
+        this.timerValue = 30; // starting value
+        this.timerText = this.add.text(200, 650, `Time:\n${this.timerValue}`, {
+            font: '100px Truculenta',   // Increased font size
+            fill: '#2ad496'
+        });
+
+        this.time.addEvent({
+            delay: 1000, // 1000 ms = 1 second
+            callback: this.updateTimer,
+            callbackScope: this,
+            loop: true
+        });
+
+        this.scoreValue = 0;
+
+        this.scoreText = this.add.text(200, 1300, `Score\n${this.scoreValue}`, {
+            font: '100px Truculenta',
+            fill: '#2ad496'
+        });
+
+        const restartButton = this.add.text(width / 2 + 200 , height - 300, 'Restart', {
+            font: '130px Truculenta',
+            fill: '#ffffff',
+            padding: { left: 10, right: 10, top: 5, bottom: 5 },
+        }).setInteractive();
+
+        restartButton.on('pointerup', () => {
+            this.scene.restart();
+        });
+
+        const returnButton = this.add.text(width / 2 - 400, height - 300, 'Return' , {
+            font: '130px Truculenta',
+            fill: '#ffffff',
+            padding: { left: 10, right: 10, top: 5, bottom: 5 },
+        }).setInteractive();
+        
+        returnButton.on('pointerup', () => {
+            window.location.href = "http://localhost:3000/";
+        });
+    }
+
+    updateTimer() {
+        this.timerValue -= 1; // decrement timer value
+        this.timerText.setText(`Time\n${this.timerValue}`);
+    
+        if (this.timerValue <= 0) {
+            // Stop the timer
+            this.timerValue = 0; 
+            this.timerText.setText('Time\n0');
+    
+            this.endGame();
+        }
+    }
+
+    init() {
+        this.gameOver = false;
+        this.state = 0; // Introduce the state variable
+    }
+
+    endGame() {
+        this.gameOver = true;
+        for (let card of this.flippedCards) {
+            if (!card.isMatched) {
+                this.flip(card);
+            }
+        }
+    
+        this.saveScore(this.scoreValue);
+    }
+
+    saveScore(score) {
+        const topScores = JSON.parse(localStorage.getItem('topScores')) || [];
+        topScores.push(score);
+        topScores.sort((a, b) => b - a);  // Sort in descending order
+        if (topScores.length > 5) {
+            topScores.pop();  // Remove the last (smallest) score if we have more than 5 scores
+        }
+        localStorage.setItem('topScores', JSON.stringify(topScores));
+    }
+
+    loadTopScores() {
+        return JSON.parse(localStorage.getItem('topScores')) || [];
     }
 
     flip(card) {
+        if (this.gameOver || this.state === 2) {
+            return; // If the game is over, in transition state, or can't flip cards, don't process the flip
+        }
+
         if (this.flippedCards.includes(card) || card.isMatched) {
             return;
         }
@@ -95,7 +193,7 @@ export class Load extends Phaser.Scene {
                     this.flippedCards.push(card);
     
                     // Schedule the automatic flip back after 3 seconds
-                    card.autoFlipBackTimer = this.time.delayedCall(3000, () => {
+                    card.autoFlipBackTimer = this.time.delayedCall(500, () => {
                         // Check if card is still face up and not matched before flipping back
                         if (card.texture.key !== 'card-back' && !card.isMatched) {
                             this.flip(card);
@@ -118,6 +216,9 @@ export class Load extends Phaser.Scene {
                             if (card1.texture.key === card2.texture.key) {
                                 card1.isMatched = true;
                                 card2.isMatched = true;
+
+                                this.scoreValue += 1;
+                                this.scoreText.setText(`Score\n${this.scoreValue}`);
                             } else {
                                 // If the cards don't match, remove the initial auto-flip timer
                                 if (card1.autoFlipBackTimer) {
@@ -126,12 +227,11 @@ export class Load extends Phaser.Scene {
                             if (card2.autoFlipBackTimer) {
                                     card2.autoFlipBackTimer.remove(false);
                                 }
-    
                                 // Then, after 500ms, flip both cards back
-                                this.time.delayedCall(500, () => {
-                                    this.flip(card1);
-                                    this.flip(card2);
-                                });
+                                    this.time.delayedCall(500, () => {
+                                        this.flip(card1);
+                                        this.flip(card2);
+                                    });
                             }
     
                             this.flippedCards = [];

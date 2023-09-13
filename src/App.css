@@ -1,4 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Truculenta:opsz,wght@12..72,900&display=swap');
+
 .appBackground {
+  display: flex;                /* Added */
+  flex-direction: column;       /* Added */
+  align-items: center;          /* Added */
   background-image: url('./images/bg.png');
   background-size: cover;
   background-repeat: no-repeat;
@@ -9,17 +14,28 @@
   z-index: -1;
 }
 
+.logo {
+  width: 600px;
+  height: 300px;
+  margin-top: px;
+  opacity: 80%;
+}
+
+.music {
+  top: 10px;
+  left: 10px;
+}
+
 .gameTitle {
   color: white;
-  display: flex;
-  justify-content: center;
-  padding-top: 80px;
+  margin-top: -40px;
+  font-family: 'Truculenta', sans-serif;
+  font-size: 80px;
 }
 
 .playBtn {
   position: absolute;
   color: white;
-  text-decoration: none;
   background-color: blue;
   padding: 20px 40px; /* Increase padding to make the button larger */
   font-size: 30px;    /* Increase font size */
@@ -27,28 +43,29 @@
   bottom: 130px;  /* Adjust this value to set the distance from the bottom */
   left: 50%;     /* Center the button horizontally */
   transform: translateX(-50%); /* Shift the button to the left by half its width to truly center it */
+  font-family: 'Truculenta', sans-serif;
+  opacity: 70%;
 }
 
 .Summary {
-  background-color: blue;
-  opacity: 30%;
   width: 450px;
   height: 450px;
   position: absolute;
-  top: 25%;
-  right: 55%;
+  top: 30%;
+  right: 65%;
   border-radius: 25px;
+  font-family: 'Truculenta', sans-serif;
+  font-size: 10px;
 }
 
 .ScoreBoard {
-  background-color: blue;
-  opacity: 30%;
   width: 450px;
   height: 450px;
   position: absolute;
-  top: 25%;
-  left: 55%;
+  top: 30%;
+  left: 65%;
   border-radius: 25px;
+  font-family: 'Truculenta', sans-serif;
 }
 
 .title {
@@ -59,5 +76,4 @@
 .scores {
   color: white;
   text-align: center;
-
 }
