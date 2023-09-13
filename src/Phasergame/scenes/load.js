@@ -2,7 +2,7 @@ import Phaser from "phaser";
 
 const STATE_IDLE = 1;
 const STATE_ONE_CARD_FLIPPED = 2;
-const STATE_TWO_CARDS_FLIPPED = 3;
+const STATE_NOTHING_ALLOWED = 3;
 const STATE_COMPARE = 4;
 const STATE_UNMATCHED = 5;
 const STATE_MATCHED = 6;
@@ -24,6 +24,21 @@ export class Load extends Phaser.Scene {
         });
     }
 
+    createRoundedRectangle(scene, x, y, width, height, radius, color, borderWidth, borderColor) {
+        const graphics = scene.add.graphics();
+    
+        graphics.fillStyle(color);
+        
+        // Border style for the rectangle
+        graphics.lineStyle(borderWidth, borderColor);
+
+        graphics.strokeRoundedRect(x, y, width, height, radius);
+        graphics.fillRoundedRect(x, y, width, height, radius);
+
+    
+        return graphics;
+    }
+
     preload() {
         this.load.image('background', './images/bg.png');
         this.load.image('card-back', './images/back.png');
@@ -33,6 +48,12 @@ export class Load extends Phaser.Scene {
         this.load.image('card-resurrect', './images/resurrect.png');
         this.load.image('card-steal', './images/steal.png');
         this.load.image('card-tiebreaker', './images/tie_breaker.png');
+        this.load.image('skull', './images/512x512.png');
+        this.load.image('gameoverbg', './images/blackout_screen_tint.png');
+        this.load.image('gameover', './images/game_over_popup.png');
+        this.load.image('bluebtn', './images/blue_button_300.png');
+        this.load.image('greenbtn', './images/green_button_300.png');
+        this.load.image('redbtn', './images/red_button_300.png');
     }
 
     create() {
@@ -58,7 +79,7 @@ export class Load extends Phaser.Scene {
 
         for (let i = 0; i < 12; i++) {
             const x = width * (0.2 + (i % 6 * 0.13));
-            const y = height * (i < 6 ? 0.38 : 0.65);
+            const y = height * (i < 6 ? 0.38 : 0.70);
             const card = this.add.sprite(x, y, 'card-back').setScale(1.65);
 
             // 3. Assign each card in the `cards` array a type from the shuffled deck
@@ -87,8 +108,8 @@ export class Load extends Phaser.Scene {
             }
         })
 
-        this.timerValue = 30; // starting value
-        this.timerText = this.add.text(200, 650, `Time:\n${this.timerValue}`, {
+        this.timerValue = 20; // starting value
+        this.timerText = this.add.text(200, 650, `Time\n${this.timerValue}`, {
             font: '100px Truculenta',   // Increased font size
             fill: '#2ad496'
         });
@@ -107,25 +128,69 @@ export class Load extends Phaser.Scene {
             fill: '#2ad496'
         });
 
-        const restartButton = this.add.text(width / 2 + 200 , height - 300, 'Restart', {
-            font: '130px Truculenta',
-            fill: '#ffffff',
-            padding: { left: 10, right: 10, top: 5, bottom: 5 },
-        }).setInteractive();
+        //gameoverbg
+        this.gameOverBgImage = this.add.image(this.scale.width / 2, this.scale.height / 2, 'gameoverbg');
+        this.gameOverBgImage.setScale(this.scale.width / this.gameOverBgImage.width, this.scale.height / this.gameOverBgImage.height);
+        this.gameOverBgImage.setVisible(false);
 
-        restartButton.on('pointerup', () => {
+        // Centering the rounded rectangle on screen
+        const rectWidth = 1100;
+        const rectHeight = 900;
+        this.roundRect = this.createRoundedRectangle(
+            this, 
+            (this.scale.width - rectWidth) / 2,   // Adjusted for centering
+            (this.scale.height - rectHeight) / 2 - 10, // Adjusted for centering
+            rectWidth, 
+            rectHeight, 
+            27, 
+            0x222747, 
+            15, 
+            0x33b9e3
+        );
+        this.roundRect.setVisible(false);
+
+        // Skull Image
+        this.skullImage = this.add.image(this.scale.width / 2, 600, 'skull');
+        this.skullImage.setScale(0.65);  // adjust the scale as per your requirements
+        this.skullImage.setVisible(false);
+
+        //Game Over Message
+        this.gameOverText = this.add.text(this.scale.width / 2, this.scale.height / 2 - 150, 'Game Over!',{
+            font: '180px Truculenta'
+        }).setOrigin(0.5, 0.5).setVisible(false);
+
+        // Score Display
+        this.finalScoreText = this.add.text(this.scale.width / 2 , this.scale.height / 2 + 30, '', {
+            font: '90px Truculenta',
+            fill: '#ffffff'
+        }).setOrigin(0.5, 0.5).setVisible(false);
+
+        // Play Again Button
+        this.playAgainButton = this.add.image(this.scale.width / 2 - 250, this.scale.height / 2 + 250, 'bluebtn').setInteractive(); // Changed x-coordinate to -200 for more space
+        this.playAgainText = this.add.text(this.playAgainButton.x, this.playAgainButton.y, 'PLAY AGAIN', {
+            font: '60px Truculenta',
+            fill: '#000000'  // Changed font color to black
+        }).setOrigin(0.5, 0.5);
+        this.playAgainButton.setScale(1.3)
+        this.playAgainButton.on('pointerup', () => {
             this.scene.restart();
         });
+        this.playAgainButton.setVisible(false);
+        this.playAgainText.setVisible(false);
 
-        const returnButton = this.add.text(width / 2 - 400, height - 300, 'Return' , {
-            font: '130px Truculenta',
-            fill: '#ffffff',
-            padding: { left: 10, right: 10, top: 5, bottom: 5 },
-        }).setInteractive();
-        
-        returnButton.on('pointerup', () => {
+        // Exit Button
+        this.exitButton = this.add.image(this.scale.width / 2 + 250, this.scale.height / 2 + 250, 'redbtn').setInteractive(); // Changed x-coordinate to +200 for more space
+        this.exitText = this.add.text(this.exitButton.x, this.exitButton.y, 'EXIT', {
+            font: '60px Truculenta',
+            fill: '#ffffff'
+        }).setOrigin(0.5, 0.5);
+        this.exitButton.setScale(1.3)
+        this.exitButton.on('pointerup', () => {
             window.location.href = "http://localhost:3000/";
         });
+        this.exitButton.setVisible(false);
+        this.exitText.setVisible(false);
+
     }
 
     updateTimer() {
@@ -138,15 +203,18 @@ export class Load extends Phaser.Scene {
             this.timerText.setText('Time\n0');
     
             this.endGame();
+            this.showGameOverScreen();
         }
     }
 
     init() {
         this.gameOver = false;
         this.state = STATE_IDLE;// Introduce the state variable
+        this.clicksAllowed = true;
     }
 
     setState(newState) {
+        console.warn(newState);
         this.state = newState;
 
         if (this.state === STATE_COMPARE) {
@@ -181,8 +249,13 @@ export class Load extends Phaser.Scene {
     }
 
     flip(card) {
-        if (this.gameOver || this.state === STATE_COMPARE) {
-            return; // If the game is over or in compare state, don't process the flip
+        console.log("flip card array", this.flippedCards);
+        if (!this.clicksAllowed) {
+            return; // If clicks aren't allowed, don't process the flip
+        }
+        
+        if (this.gameOver || this.state === STATE_COMPARE || !this.clicksAllowed) {
+        return; // If the game is over or in compare state, or clicks aren't allowed, don't process the flip
         }
 
         if (this.flippedCards.includes(card) || card.isMatched) {
@@ -191,24 +264,33 @@ export class Load extends Phaser.Scene {
 
         switch (this.state) {
             case STATE_IDLE:
+                console.log("idle state in switch statement");
                 this.flipAnimation(card);
                 this.flippedCards.push(card);
                 this.setState(STATE_ONE_CARD_FLIPPED);
                 break;
 
             case STATE_ONE_CARD_FLIPPED:
+                console.log("one card flipped state in switch statement");
                 this.flipAnimation(card);
                 this.flippedCards.push(card);
-                this.setState(STATE_TWO_CARDS_FLIPPED);
-                break;
+                this.clicksAllowed = false;
 
-            case STATE_TWO_CARDS_FLIPPED:
-                // If a third card is clicked while two cards are flipped, set state to COMPARE
-                this.setState(STATE_COMPARE);
+                // Set a delay of 300ms (or adjust to your preference) for automatic comparison.
+                this.time.delayedCall(300, () => {
+                    this.setState(STATE_COMPARE);
+                    this.clicksAllowed = true;
+                });
+                break;
+                
+
+            case STATE_COMPARE:
+                console.log("state compare state in switch statement");
                 break;
 
             default:
-                break;
+            console.error("you just hit the default state")
+            break;
         }
     }
 
@@ -232,7 +314,7 @@ export class Load extends Phaser.Scene {
                     targets: card,
                     scaleX: scaleFactorX,
                     scaleY: scaleFactorY,
-                    duration: 400
+                    duration: 200
                 });
             }
         });
@@ -254,7 +336,7 @@ export class Load extends Phaser.Scene {
             this.setState(STATE_UNMATCHED);
 
             // Flip both cards back after a delay
-            this.time.delayedCall(500, () => {
+            this.time.delayedCall(300, () => {
                 this.flipAnimation(card1);
                 this.flipAnimation(card2);
                 this.setState(STATE_IDLE); // Go back to idle after flipping cards back
@@ -264,4 +346,30 @@ export class Load extends Phaser.Scene {
         // Clear the flipped cards array
         this.flippedCards = [];
     }
+
+    showGameOverScreen() {
+        // Set the background to gameoverbg with 60% opacity
+        this.gameOverBgImage.setVisible(true);
+        this.gameOverBgImage.setAlpha(0.75);  // Set opacity to 60%
+
+        // Display the gameover rectangle first
+        this.roundRect.setVisible(true);
+        
+        // Show the skull and rectangle graphics
+        this.skullImage.setVisible(true);
+        this.gameOverText.setVisible(true);
+
+        // Display the final score
+        this.finalScoreText.setText(`Final Score: ${this.scoreValue}`);
+        this.finalScoreText.setVisible(true);
+
+        // Show the buttons
+        this.playAgainButton.setVisible(true);
+        this.playAgainText.setVisible(true);
+        this.exitButton.setVisible(true);
+        this.exitText.setVisible(true);
+    }
 }
+
+
+// [] one card [one card] two card [one card, two card] compares [one card, two card , three card etc....] [array]
