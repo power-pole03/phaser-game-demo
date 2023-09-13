@@ -1,5 +1,12 @@
 import Phaser from "phaser";
 
+const STATE_IDLE = 1;
+const STATE_ONE_CARD_FLIPPED = 2;
+const STATE_TWO_CARDS_FLIPPED = 3;
+const STATE_COMPARE = 4;
+const STATE_UNMATCHED = 5;
+const STATE_MATCHED = 6;
+
 export class Load extends Phaser.Scene {
     constructor() {
         super({
@@ -136,7 +143,16 @@ export class Load extends Phaser.Scene {
 
     init() {
         this.gameOver = false;
-        this.state = 0; // Introduce the state variable
+        this.state = STATE_IDLE;// Introduce the state variable
+    }
+
+    setState(newState) {
+        this.state = newState;
+
+        if (this.state === STATE_COMPARE) {
+            // Start comparing cards when moving to the COMPARE state
+            this.compareCards();
+        }
     }
 
     endGame() {
@@ -165,22 +181,46 @@ export class Load extends Phaser.Scene {
     }
 
     flip(card) {
-        if (this.gameOver || this.state === 2) {
-            return; // If the game is over, in transition state, or can't flip cards, don't process the flip
+        if (this.gameOver || this.state === STATE_COMPARE) {
+            return; // If the game is over or in compare state, don't process the flip
         }
 
         if (this.flippedCards.includes(card) || card.isMatched) {
             return;
         }
-    
+
+        switch (this.state) {
+            case STATE_IDLE:
+                this.flipAnimation(card);
+                this.flippedCards.push(card);
+                this.setState(STATE_ONE_CARD_FLIPPED);
+                break;
+
+            case STATE_ONE_CARD_FLIPPED:
+                this.flipAnimation(card);
+                this.flippedCards.push(card);
+                this.setState(STATE_TWO_CARDS_FLIPPED);
+                break;
+
+            case STATE_TWO_CARDS_FLIPPED:
+                // If a third card is clicked while two cards are flipped, set state to COMPARE
+                this.setState(STATE_COMPARE);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    flipAnimation(card) {
         const isCardFaceUp = card.texture.key !== 'card-back';
         const targetTexture = isCardFaceUp ? 'card-back' : card.cardType;
-    
+
         const cardBackWidth = this.textures.get('card-back').getSourceImage().width;
         const cardBackHeight = this.textures.get('card-back').getSourceImage().height;
         const scaleFactorX = isCardFaceUp ? 1.65 : (1.65 * (cardBackWidth / this.textures.get(targetTexture).getSourceImage().width));
         const scaleFactorY = isCardFaceUp ? 1.65 : (1.65 * (cardBackHeight / this.textures.get(targetTexture).getSourceImage().height));
-    
+
         this.tweens.add({
             targets: card,
             scaleX: 0,
@@ -188,57 +228,40 @@ export class Load extends Phaser.Scene {
             duration: 200,
             onComplete: () => {
                 card.setTexture(targetTexture);
-    
-                if (!isCardFaceUp) {
-                    this.flippedCards.push(card);
-    
-                    // Schedule the automatic flip back after 3 seconds
-                    card.autoFlipBackTimer = this.time.delayedCall(500, () => {
-                        // Check if card is still face up and not matched before flipping back
-                        if (card.texture.key !== 'card-back' && !card.isMatched) {
-                            this.flip(card);
-                        }
-                    });
-                } else if (card.autoFlipBackTimer) {
-                    // If flipping back manually, cancel the scheduled automatic flip back
-                    card.autoFlipBackTimer.remove(false);
-                }
-    
                 this.tweens.add({
                     targets: card,
                     scaleX: scaleFactorX,
                     scaleY: scaleFactorY,
-                    duration: 400,
-                    onComplete: () => {
-                        if (this.flippedCards.length === 2) {
-                            const [card1, card2] = this.flippedCards;
-    
-                            if (card1.texture.key === card2.texture.key) {
-                                card1.isMatched = true;
-                                card2.isMatched = true;
-
-                                this.scoreValue += 1;
-                                this.scoreText.setText(`Score\n${this.scoreValue}`);
-                            } else {
-                                // If the cards don't match, remove the initial auto-flip timer
-                                if (card1.autoFlipBackTimer) {
-                                    card1.autoFlipBackTimer.remove(false);
-                                }
-                            if (card2.autoFlipBackTimer) {
-                                    card2.autoFlipBackTimer.remove(false);
-                                }
-                                // Then, after 500ms, flip both cards back
-                                    this.time.delayedCall(500, () => {
-                                        this.flip(card1);
-                                        this.flip(card2);
-                                    });
-                            }
-    
-                            this.flippedCards = [];
-                        }
-                    }
+                    duration: 400
                 });
             }
         });
+    }
+
+    compareCards() {
+        const [card1, card2] = this.flippedCards;
+
+        if (card1.cardType === card2.cardType) {
+            this.setState(STATE_MATCHED);
+            card1.isMatched = true;
+            card2.isMatched = true;
+
+            this.scoreValue += 1;
+            this.scoreText.setText(`Score\n${this.scoreValue}`);
+
+            this.setState(STATE_IDLE); // Go back to idle after updating score
+        } else {
+            this.setState(STATE_UNMATCHED);
+
+            // Flip both cards back after a delay
+            this.time.delayedCall(500, () => {
+                this.flipAnimation(card1);
+                this.flipAnimation(card2);
+                this.setState(STATE_IDLE); // Go back to idle after flipping cards back
+            });
+        }
+
+        // Clear the flipped cards array
+        this.flippedCards = [];
     }
 }
