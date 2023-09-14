@@ -2,10 +2,9 @@ import Phaser from "phaser";
 
 const STATE_IDLE = 1;
 const STATE_ONE_CARD_FLIPPED = 2;
-const STATE_NOTHING_ALLOWED = 3;
-const STATE_COMPARE = 4;
-const STATE_UNMATCHED = 5;
-const STATE_MATCHED = 6;
+const STATE_COMPARE = 3;
+const STATE_UNMATCHED = 4;
+const STATE_MATCHED = 5;
 
 export class Load extends Phaser.Scene {
     constructor() {
@@ -209,8 +208,9 @@ export class Load extends Phaser.Scene {
 
     init() {
         this.gameOver = false;
-        this.state = STATE_IDLE;// Introduce the state variable
+        this.state = STATE_IDLE;
         this.clicksAllowed = true;
+        this.disableFlippedClick = false; 
     }
 
     setState(newState) {
@@ -249,22 +249,18 @@ export class Load extends Phaser.Scene {
     }
 
     flip(card) {
-        console.log("flip card array", this.flippedCards);
-        if (!this.clicksAllowed) {
-            return; // If clicks aren't allowed, don't process the flip
-        }
-        
-        if (this.gameOver || this.state === STATE_COMPARE || !this.clicksAllowed) {
-        return; // If the game is over or in compare state, or clicks aren't allowed, don't process the flip
-        }
-
-        if (this.flippedCards.includes(card) || card.isMatched) {
+        if (!this.clicksAllowed || 
+            this.gameOver || 
+            card.isMatched || 
+            this.flippedCards.includes(card) || 
+            this.state === STATE_COMPARE || 
+            this.disableFlippedClick  // Check against the flag
+        ) {
             return;
         }
 
         switch (this.state) {
             case STATE_IDLE:
-                console.log("idle state in switch statement");
                 this.flipAnimation(card);
                 this.flippedCards.push(card);
                 this.setState(STATE_ONE_CARD_FLIPPED);
@@ -321,6 +317,7 @@ export class Load extends Phaser.Scene {
     }
 
     compareCards() {
+        this.clicksAllowed = false;
         const [card1, card2] = this.flippedCards;
 
         if (card1.cardType === card2.cardType) {
@@ -335,11 +332,17 @@ export class Load extends Phaser.Scene {
         } else {
             this.setState(STATE_UNMATCHED);
 
+            this.disableFlippedClick = true;
+
             // Flip both cards back after a delay
             this.time.delayedCall(300, () => {
                 this.flipAnimation(card1);
                 this.flipAnimation(card2);
                 this.setState(STATE_IDLE); // Go back to idle after flipping cards back
+
+                this.time.delayedCall(300, () => {
+                    this.disableFlippedClick = false; 
+                });
             });
         }
 
