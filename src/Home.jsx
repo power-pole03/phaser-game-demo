@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback} from "react";
 import { Container , Table } from 'react-bootstrap';
 import './App.css';
-import { /*updateHighScores,*/ getHighScores } from "./score";
 import {Link} from "wouter";
 
 function Home() {
 
+  const handleResetClick = () => {
+    // Save the username in local storage
+    localStorage.clear();
+  };
+
   //music player
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [currentTrackIndex,setCurrentTrackIndex] = useState(0);
   const audioRef = useRef(null);
   const totalTracks = 32;
   const playlist = Array.from({ length: totalTracks }, (_, i) => `/musics/track${i + 1}.wav`);
@@ -30,13 +34,8 @@ function Home() {
     }
   }, [handleTrackEnd]);
 
-  //score
-  const [highScores, setHighScores] = useState([]);
-
-  useEffect(() => {
-    // Load high scores on component mount
-    setHighScores(getHighScores());
-  }, []);
+  const storedData = localStorage.getItem('Leaderboard');
+  const leaderboardData = storedData ? JSON.parse(storedData) : [];
 
   return (
     
@@ -62,14 +61,10 @@ function Home() {
             </tr>
           </thead>
           <tbody>
-            {highScores.map((score, index) => (
+            {leaderboardData.map((score, index) => (
               <tr key={index}>
               <td>
-                {new Date(score.datetime).toLocaleString("en-CA", {
-                  timeZone: "America/Toronto",
-                  year: 'numeric', month: 'long', day: 'numeric',
-                  hour: '2-digit', minute: '2-digit', second: '2-digit'
-                })}
+                {score.date}
               </td>
               <td>{score.score}</td>
               </tr>
@@ -80,6 +75,7 @@ function Home() {
       <Link href="/Game" >
         <button size="lg" className="playBtn" >Start game</button>
       </Link>
+      <button size="md" onClick={handleResetClick} className="Reset-button" >Reset Leaderboard</button>
     </Container>
     
   );

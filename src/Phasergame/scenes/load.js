@@ -107,7 +107,7 @@ export class Load extends Phaser.Scene {
             }
         })
 
-        this.timerValue = 20; // starting value
+        this.timerValue = 10; // starting value
         this.timerText = this.add.text(200, 650, `Time\n${this.timerValue}`, {
             font: '100px Truculenta',   // Increased font size
             fill: '#2ad496'
@@ -231,21 +231,30 @@ export class Load extends Phaser.Scene {
             }
         }
     
-        this.saveScore(this.scoreValue);
+        this.updateHighScore(this.scoreValue);
     }
 
-    saveScore(score) {
-        const topScores = JSON.parse(localStorage.getItem('topScores')) || [];
-        topScores.push(score);
-        topScores.sort((a, b) => b - a);  // Sort in descending order
-        if (topScores.length > 5) {
-            topScores.pop();  // Remove the last (smallest) score if we have more than 5 scores
+    updateHighScore(score, date) {
+        if (score !== undefined && date !== undefined) {
+            const gameData = {
+                score: score,
+                date: date
+            };
+    
+            let existingData = JSON.parse(localStorage.getItem('Leaderboard')) || [];
+    
+            existingData.push(gameData);
+            existingData.sort((a, b) => b.score - a.score);
+    
+            localStorage.setItem('Leaderboard', JSON.stringify(existingData));
+        } else {
+            // Handle the case where score or date is undefined
+            console.error('score and date must be defined to save game data.');
         }
-        localStorage.setItem('topScores', JSON.stringify(topScores));
     }
-
+      
     loadTopScores() {
-        return JSON.parse(localStorage.getItem('topScores')) || [];
+        return JSON.parse(localStorage.getItem('highScores')) || [];
     }
 
     flip(card) {
@@ -351,6 +360,10 @@ export class Load extends Phaser.Scene {
     }
 
     showGameOverScreen() {
+         // Store date and save data
+         const currentDate = new Date().toISOString().slice(0, 10);  // gets date in YYYY-MM-DD format
+         this.updateHighScore(this.scoreValue, currentDate);
+         
         // Set the background to gameoverbg with 60% opacity
         this.gameOverBgImage.setVisible(true);
         this.gameOverBgImage.setAlpha(0.75);  // Set opacity to 60%
@@ -373,6 +386,3 @@ export class Load extends Phaser.Scene {
         this.exitText.setVisible(true);
     }
 }
-
-
-// [] one card [one card] two card [one card, two card] compares [one card, two card , three card etc....] [array]
