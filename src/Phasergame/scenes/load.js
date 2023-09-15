@@ -37,6 +37,7 @@ export class Load extends Phaser.Scene {
     
         return graphics;
     }
+      
 
     preload() {
         this.load.image('background', './images/bg.png');
@@ -53,6 +54,17 @@ export class Load extends Phaser.Scene {
         this.load.image('bluebtn', './images/blue_button_300.png');
         this.load.image('greenbtn', './images/green_button_300.png');
         this.load.image('redbtn', './images/red_button_300.png');
+        this.load.spritesheet('redFlame_spritesheet', './images/redNormal.png', { frameWidth: 100, frameHeight: 100, endframe: 65 });
+    }
+
+    createAnimation (spritesheet, frames, frameRate, repeat = -1)
+    {
+        this.anims.create({
+            key: spritesheet + '_ani',
+            frames: this.anims.generateFrameNumbers(spritesheet, { start: 0, end: frames }),
+            frameRate: frameRate,
+            repeat: repeat
+        });
     }
 
     create() {
@@ -63,6 +75,27 @@ export class Load extends Phaser.Scene {
         let scaleY = this.cameras.main.height / bg.height;
         let scale = Math.max(scaleX, scaleY);
         bg.setScale(scale);
+        bg.setTint(0x999999);
+
+        this.createAnimation('redFlame_spritesheet', 65, 30, -1);
+        const burst4_sprite1 = this.add.sprite(320, 960, 'redFlame_spritesheet')
+        burst4_sprite1.setScale(6);
+        burst4_sprite1.play('redFlame_spritesheet_ani');
+        
+        this.createAnimation('redFlame_spritesheet', 65, 30, -1);
+        const burst4_sprite2 = this.add.sprite(410, 910, 'redFlame_spritesheet')
+        burst4_sprite2.setScale(6);
+        burst4_sprite2.play('redFlame_spritesheet_ani');
+
+        this.createAnimation('redFlame_spritesheet', 65, 30, -1);
+        const burst4_sprite3 = this.add.sprite(3660, 780, 'redFlame_spritesheet')
+        burst4_sprite3.setScale(6);
+        burst4_sprite3.play('redFlame_spritesheet_ani');
+
+        this.createAnimation('redFlame_spritesheet', 65, 30, -1);
+        const burst4_sprite4 = this.add.sprite(3550, 750, 'redFlame_spritesheet')
+        burst4_sprite4.setScale(6);
+        burst4_sprite4.play('redFlame_spritesheet_ani');
 
         const { width, height} = this.scale;
 
@@ -107,7 +140,7 @@ export class Load extends Phaser.Scene {
             }
         })
 
-        this.timerValue = 10; // starting value
+        this.timerValue = 10000; // starting value
         this.timerText = this.add.text(200, 650, `Time\n${this.timerValue}`, {
             font: '100px Truculenta',   // Increased font size
             fill: '#2ad496'
@@ -280,21 +313,11 @@ export class Load extends Phaser.Scene {
 
         switch (this.state) {
             case STATE_IDLE:
-                this.flipAnimation(card);
-                this.flippedCards.push(card);
-                this.setState(STATE_ONE_CARD_FLIPPED);
-                break;
+                this.handleIdleStateFlip(card);
+            break;
 
             case STATE_ONE_CARD_FLIPPED:
-                this.flipAnimation(card);
-                this.flippedCards.push(card);
-                this.clicksAllowed = false;
-                
-                // Set a delay of 300ms (or adjust to your preference) for automatic comparison.
-                this.time.delayedCall(300, () => {
-                    this.setState(STATE_COMPARE);
-                    this.clicksAllowed = true;
-                });
+                this.handleOneCardFlippedStateFlip(card);
                 break;
                 
 
@@ -304,6 +327,33 @@ export class Load extends Phaser.Scene {
             default:
             break;
         }
+    }
+
+    isFlipNotAllowed(card, isCardAlreadyFlipped) {
+        return !this.clicksAllowed || 
+               this.gameOver || 
+               card.isMatched || 
+               isCardAlreadyFlipped || 
+               this.state === STATE_COMPARE || 
+               this.disableFlippedClick;
+    }
+    
+    handleIdleStateFlip(card) {
+        this.flipAnimation(card);
+        this.flippedCards.push(card);
+        this.setState(STATE_ONE_CARD_FLIPPED);
+    }
+    
+    handleOneCardFlippedStateFlip(card) {
+        this.flipAnimation(card);
+        this.flippedCards.push(card);
+        this.clicksAllowed = false;
+        
+        // Set a delay of 300ms for automatic comparison.
+        this.time.delayedCall(300, () => {
+            this.setState(STATE_COMPARE);
+            this.clicksAllowed = true;
+        });
     }
 
     flipAnimation(card) {
