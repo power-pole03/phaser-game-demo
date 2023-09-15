@@ -51,6 +51,19 @@ function Home() {
       <h1 className="gameTitle">Match Game</h1>
       <div className='Summary'>
         <h3 className='title'>Summary</h3>
+
+        <h4>Objective:</h4>
+        <p>Match Game challenges players to find and pair identical items from a grid or set. The goal is to remember where each item is located and match them up in the fewest moves possible or within a given timeframe.</p>
+
+        <h4>How to Play:</h4>
+        <ol>
+            <li>Begin by starting a new game.</li>
+            <li>A grid will appear with all items facedown.</li>
+            <li>Click on any two items to reveal their face.</li>
+            <li>If they match, they will remain revealed; if not, they will flip back over.</li>
+            <li>Continue this process, trying to remember each item's location to make correct matches.</li>
+            <li>The game ends when all pairs have been successfully matched.</li>
+        </ol>
       </div>
       <div className='ScoreBoard'>
         <h3 className="scores">LeaderBoard</h3>
@@ -76,7 +89,7 @@ function Home() {
       <Link href="/Game" >
         <button size="lg" className="playBtn" >Start game</button>
       </Link>
-      <button size="md" onClick={handleResetClick} className="Reset-button" >Reset Leaderboard</button>
+      {/* <button size="md" onClick={handleResetClick} className="Reset-button" >Reset Leaderboard</button> */}
     </Container>
     
   );

@@ -185,7 +185,7 @@ export class Load extends Phaser.Scene {
         }).setOrigin(0.5, 0.5);
         this.exitButton.setScale(1.3)
         this.exitButton.on('pointerup', () => {
-            window.location.href = "http://localhost:3000/";
+            window.location.href = "/";
         });
         this.exitButton.setVisible(false);
         this.exitText.setVisible(false);
@@ -197,6 +197,10 @@ export class Load extends Phaser.Scene {
         this.timerText.setText(`Time\n${this.timerValue}`);
     
         if (this.timerValue <= 0) {
+             // Store date and save data
+            const currentDate = new Date().toISOString().slice(0, 10);  // gets date in YYYY-MM-DD format
+            this.updateHighScore(this.scoreValue, currentDate);
+            
             // Stop the timer
             this.timerValue = 0; 
             this.timerText.setText('Time\n0');
@@ -355,11 +359,7 @@ export class Load extends Phaser.Scene {
         this.flippedCards = [];
     }
 
-    showGameOverScreen() {
-         // Store date and save data
-         const currentDate = new Date().toISOString().slice(0, 10);  // gets date in YYYY-MM-DD format
-         this.updateHighScore(this.scoreValue, currentDate);
-         
+    showGameOverScreen() { 
         // Set the background to gameoverbg with 60% opacity
         this.gameOverBgImage.setVisible(true);
         this.gameOverBgImage.setAlpha(0.75);  // Set opacity to 60%

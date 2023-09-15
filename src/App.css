@@ -15,10 +15,13 @@
 }
 
 .logo {
-  width: 600px;
-  height: 300px;
-  margin-top: px;
+  width: 500px;
+  height: 200px;
   opacity: 80%;
+  position: absolute;  
+  top: 0;              
+  left: 40px;             
+  margin: 10px;        
 }
 
 .music {
@@ -28,7 +31,7 @@
 
 .gameTitle {
   color: white;
-  margin-top: -40px;
+  margin-top: 50px;
   font-family: 'Truculenta', sans-serif;
   font-size: 80px;
 }
@@ -48,29 +51,62 @@
 }
 
 .Summary {
-  width: 450px;
-  height: 450px;
+  width: 500px;
+  height: 600px;
   position: absolute;
   top: 30%;
   right: 65%;
   border-radius: 25px;
   font-family: 'Truculenta', sans-serif;
   font-size: 10px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .ScoreBoard {
-  width: 450px;
-  height: 450px;
+  width: 500px;
+  height: 870px;
   position: absolute;
-  top: 30%;
+  top: 30px;
   left: 65%;
   border-radius: 25px;
   font-family: 'Truculenta', sans-serif;
+  font-size: 10px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  color: white;
-  text-align: center;
+  color: #2c3e50; /* Dark blue shade */
+  border-bottom: 2px solid #3498db; /* Light blue shade for the border */
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+h4 {
+  margin-top: 25px;
+  color: #2c3e50;
+  border-bottom: 1px solid #ecf0f1; /* Very light gray */
+  padding-bottom: 5px;
+}
+
+p, ol {
+  color: #7f8c8d; /* Gray text for better readability against a white background */
+  font-size: 16px;
+}
+
+ol{
+  margin-left: 25px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+th, td {
+  font-size: 35px;
 }
 
 .scores {
