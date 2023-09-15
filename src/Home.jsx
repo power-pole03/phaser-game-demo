@@ -36,6 +36,7 @@ function Home() {
 
   const storedData = localStorage.getItem('Leaderboard');
   const leaderboardData = storedData ? JSON.parse(storedData) : [];
+  const top5LeaderboardData = leaderboardData.sort((a, b) => b.score - a.score).slice(0, 5);
 
   return (
     
@@ -61,7 +62,7 @@ function Home() {
             </tr>
           </thead>
           <tbody>
-            {leaderboardData.map((score, index) => (
+            {top5LeaderboardData.map((score, index) => (
               <tr key={index}>
               <td>
                 {score.date}

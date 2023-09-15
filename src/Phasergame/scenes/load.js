@@ -253,10 +253,6 @@ export class Load extends Phaser.Scene {
         }
     }
       
-    loadTopScores() {
-        return JSON.parse(localStorage.getItem('highScores')) || [];
-    }
-
     flip(card) {
         if (!this.clicksAllowed || 
             this.gameOver || 
