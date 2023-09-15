@@ -20,7 +20,7 @@
   opacity: 80%;
   position: absolute;  
   top: 0;              
-  left: 45px;             
+  left: 70px;             
   margin: 10px;        
 }
 
@@ -43,11 +43,11 @@
   padding: 20px 40px; /* Increase padding to make the button larger */
   font-size: 30px;    /* Increase font size */
   border-radius: 12px; /* Optional: Rounded corners */
-  bottom: 130px;  /* Adjust this value to set the distance from the bottom */
+  bottom: 30px;  /* Adjust this value to set the distance from the bottom */
   left: 50%;     /* Center the button horizontally */
   transform: translateX(-50%); /* Shift the button to the left by half its width to truly center it */
   font-family: 'Truculenta', sans-serif;
-  opacity: 70%;
+  opacity: 80%;
 }
 
 .Summary {
@@ -112,4 +112,10 @@ th, td {
 .scores {
   color: white;
   text-align: center;
+}
+
+.audioElement {
+  position: absolute;  /* Use 'fixed' if you want it to stick to the screen */
+  bottom: 10px;        /* Distance from the bottom */
+  left: 80px;         /* Distance from the right */
 }

@@ -47,7 +47,7 @@ function Home() {
           type="video/mp4"
         />
       </video>
-      {/* <audio src={playlist[currentTrackIndex]} ref={audioRef} autoPlay controls></audio> */}
+      <audio className = "audioElement"src={playlist[currentTrackIndex]} ref={audioRef} autoPlay controls></audio>
       <h1 className="gameTitle">Match Game</h1>
       <div className='Summary'>
         <h3 className='title'>Summary</h3>

@@ -195,7 +195,8 @@ export class Load extends Phaser.Scene {
     updateTimer() {
         this.timerValue -= 1; // decrement timer value
         this.timerText.setText(`Time\n${this.timerValue}`);
-    
+        
+
         if (this.timerValue <= 0) {
              // Store date and save data
             const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -248,7 +249,7 @@ export class Load extends Phaser.Scene {
             let existingData = JSON.parse(localStorage.getItem('Leaderboard')) || [];
         
             // Check for duplicate entry
-            const duplicate = existingData.find(entry => entry.date === gameData.date);
+            const duplicate = existingData.find(entry => entry.score === gameData.score || entry.date === gameData.date);
             if (!duplicate) {
                 // If no duplicate, add new game data to existing data
                 existingData.push(gameData);
@@ -285,11 +286,10 @@ export class Load extends Phaser.Scene {
                 break;
 
             case STATE_ONE_CARD_FLIPPED:
-                console.log("one card flipped state in switch statement");
                 this.flipAnimation(card);
                 this.flippedCards.push(card);
                 this.clicksAllowed = false;
-
+                
                 // Set a delay of 300ms (or adjust to your preference) for automatic comparison.
                 this.time.delayedCall(300, () => {
                     this.setState(STATE_COMPARE);
@@ -299,11 +299,9 @@ export class Load extends Phaser.Scene {
                 
 
             case STATE_COMPARE:
-                console.log("state compare state in switch statement");
                 break;
 
             default:
-            console.error("you just hit the default state")
             break;
         }
     }
