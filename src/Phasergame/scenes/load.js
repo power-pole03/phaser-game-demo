@@ -244,15 +244,24 @@ export class Load extends Phaser.Scene {
                 score: score,
                 date: date
             };
-    
+        
             let existingData = JSON.parse(localStorage.getItem('Leaderboard')) || [];
-    
-            existingData.push(gameData);
+        
+            // Check for duplicate entry
+            const duplicate = existingData.find(entry => entry.score === gameData.score && entry.date === gameData.date);
+            if (!duplicate) {
+                // If no duplicate, add new game data to existing data
+                existingData.push(gameData);
+            }
+            
+            // Sort the array in descending order of scores
             existingData.sort((a, b) => b.score - a.score);
-    
+        
+            // Trim the array to keep only top 5
+            existingData = existingData.slice(0, 5);
+        
             localStorage.setItem('Leaderboard', JSON.stringify(existingData));
         } else {
-            // Handle the case where score or date is undefined
             console.error('score and date must be defined to save game data.');
         }
     }
