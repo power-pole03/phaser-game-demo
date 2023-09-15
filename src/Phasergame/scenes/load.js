@@ -198,7 +198,7 @@ export class Load extends Phaser.Scene {
     
         if (this.timerValue <= 0) {
              // Store date and save data
-            const currentDate = new Date().toISOString().slice(0, 10);  // gets date in YYYY-MM-DD format
+            const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
             this.updateHighScore(this.scoreValue, currentDate);
             
             // Stop the timer
@@ -248,7 +248,7 @@ export class Load extends Phaser.Scene {
             let existingData = JSON.parse(localStorage.getItem('Leaderboard')) || [];
         
             // Check for duplicate entry
-            const duplicate = existingData.find(entry => entry.score === gameData.score && entry.date === gameData.date);
+            const duplicate = existingData.find(entry => entry.date === gameData.date);
             if (!duplicate) {
                 // If no duplicate, add new game data to existing data
                 existingData.push(gameData);
