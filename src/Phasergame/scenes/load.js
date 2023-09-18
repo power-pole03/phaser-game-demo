@@ -36,8 +36,7 @@ export class Load extends Phaser.Scene {
 
     
         return graphics;
-    }
-      
+    }  
 
     preload() {
         this.load.image('background', './images/bg.png');
@@ -160,7 +159,7 @@ export class Load extends Phaser.Scene {
             }
         })
 
-        this.timerValue = 10000; // starting value
+        this.timerValue = 15; // starting value
         this.timerText = this.add.text(200, 650, `Time\n${this.timerValue}`, {
             font: '100px Truculenta',   // Increased font size
             fill: '#2ad496'
@@ -288,7 +287,6 @@ export class Load extends Phaser.Scene {
                 this.flip(card);
             }
         }
-    
         this.updateHighScore(this.scoreValue);
     }
 
