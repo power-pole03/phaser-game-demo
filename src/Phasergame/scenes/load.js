@@ -255,16 +255,18 @@ export class Load extends Phaser.Scene {
         
 
         if (this.timerValue <= 0) {
-             // Store date and save data
+            // Store date and save data
             const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
             this.updateHighScore(this.scoreValue, currentDate);
-            
+
             // Stop the timer
             this.timerValue = 0; 
             this.timerText.setText('Time\n0');
     
             this.endGame();
             this.showGameOverScreen();
+
+            this.isHighScoreUpdated = true;
         }
     }
 
@@ -273,6 +275,7 @@ export class Load extends Phaser.Scene {
         this.state = STATE_IDLE;
         this.clicksAllowed = true;
         this.disableFlippedClick = false; 
+        this.isHighScoreUpdated = false;
     }
 
     setState(newState) {
@@ -292,11 +295,10 @@ export class Load extends Phaser.Scene {
                 this.flip(card);
             }
         }
-        this.updateHighScore(this.scoreValue);
     }
 
     updateHighScore(score, date) {
-        if (score !== undefined && date !== undefined) {
+        if (score !== undefined && date !== undefined && this.timerValue <= 0) {
             const gameData = {
                 score: score,
                 date: date
@@ -418,10 +420,15 @@ export class Load extends Phaser.Scene {
             card1.isMatched = true;
             card2.isMatched = true;
 
+            this.setState(STATE_IDLE); // Go back to idle after updating score
+            
             this.scoreValue += 1;
             this.scoreText.setText(`Score\n${this.scoreValue}`);
 
-            this.setState(STATE_IDLE); // Go back to idle after updating score
+            if (!this.gameOver && !this.isHighScoreUpdated) {
+                const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                this.updateHighScore(this.scoreValue, currentDate);
+            }
         } else {
             this.setState(STATE_UNMATCHED);
             wrong.play()
