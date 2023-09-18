@@ -54,7 +54,12 @@ export class Load extends Phaser.Scene {
         this.load.image('bluebtn', './images/blue_button_300.png');
         this.load.image('greenbtn', './images/green_button_300.png');
         this.load.image('redbtn', './images/red_button_300.png');
+        this.load.audio('yes', './sounds/yes.mp3');
+        this.load.audio('wrong', './sounds/wrong.mp3');
         this.load.spritesheet('redFlame_spritesheet', './images/redNormal.png', { frameWidth: 100, frameHeight: 100, endframe: 65 });
+        this.load.spritesheet('blueFlame_spritesheet', './images/blue.png', { frameWidth: 100, frameHeight: 100, endframe: 65 });
+        this.load.spritesheet('greenFlame_spritesheet', './images/greenSimple.png', { frameWidth: 100, frameHeight: 100, endframe: 30 });
+        this.load.spritesheet('purpleFlame_spritesheet', './images/purpleSmall.png', { frameWidth: 100, frameHeight: 100, endframe: 40, padding: 10 });
     }
 
     createAnimation (spritesheet, frames, frameRate, repeat = -1)
@@ -76,6 +81,21 @@ export class Load extends Phaser.Scene {
         let scale = Math.max(scaleX, scaleY);
         bg.setScale(scale);
         bg.setTint(0x999999);
+
+        this.createAnimation('blueFlame_spritesheet', 65, 30, -1);
+        const burst1_sprite = this.add.sprite(200, 100, 'blueFlame_spritesheet')
+        burst1_sprite.setScale(6);
+        burst1_sprite.play('blueFlame_spritesheet_ani');
+
+        this.createAnimation('greenFlame_spritesheet', 30, 30, -1);
+        const burst2_sprite = this.add.sprite(400, 100, 'greenFlame_spritesheet')
+        burst2_sprite.setScale(6);
+        burst2_sprite.play('greenFlame_spritesheet_ani');
+
+        this.createAnimation('purpleFlame_spritesheet', 40, 30, -1);
+        const burst3_sprite = this.add.sprite(500, 140, 'purpleFlame_spritesheet')
+        burst3_sprite.setScale(6);
+        burst3_sprite.play('purpleFlame_spritesheet_ani');
 
         this.createAnimation('redFlame_spritesheet', 65, 30, -1);
         const burst4_sprite1 = this.add.sprite(320, 960, 'redFlame_spritesheet')
@@ -383,11 +403,15 @@ export class Load extends Phaser.Scene {
     }
 
     compareCards() {
+        let yes = this.sound.add('yes');
+        let wrong = this.sound.add('wrong');
+
         this.clicksAllowed = false;
         const [card1, card2] = this.flippedCards;
 
         if (card1.cardType === card2.cardType) {
             this.setState(STATE_MATCHED);
+            yes.play();
             card1.isMatched = true;
             card2.isMatched = true;
 
@@ -397,6 +421,7 @@ export class Load extends Phaser.Scene {
             this.setState(STATE_IDLE); // Go back to idle after updating score
         } else {
             this.setState(STATE_UNMATCHED);
+            wrong.play()
 
             this.disableFlippedClick = true;
 

@@ -4,12 +4,6 @@ import './App.css';
 import {Link} from "wouter";
 
 function Home() {
-
-  const handleResetClick = () => {
-    // Save the username in local storage
-    localStorage.clear();
-  };
-
   //music player
   const [currentTrackIndex,setCurrentTrackIndex] = useState(0);
   const audioRef = useRef(null);
