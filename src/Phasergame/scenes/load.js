@@ -82,39 +82,44 @@ export class Load extends Phaser.Scene {
         bg.setTint(0x999999);
 
         this.createAnimation('blueFlame_spritesheet', 65, 30, -1);
-        const burst1_sprite = this.add.sprite(200, 100, 'blueFlame_spritesheet')
-        burst1_sprite.setScale(6);
-        burst1_sprite.play('blueFlame_spritesheet_ani');
-
-        this.createAnimation('greenFlame_spritesheet', 30, 30, -1);
-        const burst2_sprite = this.add.sprite(400, 100, 'greenFlame_spritesheet')
-        burst2_sprite.setScale(6);
-        burst2_sprite.play('greenFlame_spritesheet_ani');
+        const burst1_sprite1 = this.add.sprite(3640, 1530, 'blueFlame_spritesheet')
+        burst1_sprite1.setScale(3);
+        burst1_sprite1.play('blueFlame_spritesheet_ani');
+        
+        this.createAnimation('blueFlame_spritesheet', 65, 30, -1);
+        const burst1_sprite2 = this.add.sprite(3695, 1500, 'blueFlame_spritesheet')
+        burst1_sprite2.setScale(4);
+        burst1_sprite2.play('blueFlame_spritesheet_ani');
 
         this.createAnimation('purpleFlame_spritesheet', 40, 30, -1);
-        const burst3_sprite = this.add.sprite(500, 140, 'purpleFlame_spritesheet')
-        burst3_sprite.setScale(6);
-        burst3_sprite.play('purpleFlame_spritesheet_ani');
+        const burst2_sprite1 = this.add.sprite(120, 1660, 'purpleFlame_spritesheet')
+        burst2_sprite1.setScale(6);
+        burst2_sprite1.play('purpleFlame_spritesheet_ani');
+        
+        this.createAnimation('purpleFlame_spritesheet', 40, 30, -1);
+        const burst2_sprite2 = this.add.sprite(190, 1640, 'purpleFlame_spritesheet')
+        burst2_sprite2.setScale(6);
+        burst2_sprite2.play('purpleFlame_spritesheet_ani');
 
         this.createAnimation('redFlame_spritesheet', 65, 30, -1);
-        const burst4_sprite1 = this.add.sprite(320, 960, 'redFlame_spritesheet')
-        burst4_sprite1.setScale(6);
-        burst4_sprite1.play('redFlame_spritesheet_ani');
+        const burst3_sprite1 = this.add.sprite(320, 960, 'redFlame_spritesheet')
+        burst3_sprite1.setScale(6);
+        burst3_sprite1.play('redFlame_spritesheet_ani');
         
         this.createAnimation('redFlame_spritesheet', 65, 30, -1);
-        const burst4_sprite2 = this.add.sprite(410, 910, 'redFlame_spritesheet')
-        burst4_sprite2.setScale(6);
-        burst4_sprite2.play('redFlame_spritesheet_ani');
+        const burst3_sprite2 = this.add.sprite(410, 910, 'redFlame_spritesheet')
+        burst3_sprite2.setScale(6);
+        burst3_sprite2.play('redFlame_spritesheet_ani');
 
         this.createAnimation('redFlame_spritesheet', 65, 30, -1);
-        const burst4_sprite3 = this.add.sprite(3660, 780, 'redFlame_spritesheet')
-        burst4_sprite3.setScale(6);
-        burst4_sprite3.play('redFlame_spritesheet_ani');
+        const burst3_sprite3 = this.add.sprite(3660, 780, 'redFlame_spritesheet')
+        burst3_sprite3.setScale(6);
+        burst3_sprite3.play('redFlame_spritesheet_ani');
 
         this.createAnimation('redFlame_spritesheet', 65, 30, -1);
-        const burst4_sprite4 = this.add.sprite(3550, 750, 'redFlame_spritesheet')
-        burst4_sprite4.setScale(6);
-        burst4_sprite4.play('redFlame_spritesheet_ani');
+        const burst3_sprite4 = this.add.sprite(3550, 750, 'redFlame_spritesheet')
+        burst3_sprite4.setScale(6);
+        burst3_sprite4.play('redFlame_spritesheet_ani');
 
         const { width, height} = this.scale;
 
